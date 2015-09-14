@@ -3,11 +3,19 @@
 - name: Configure Bind Server
   hosts: dnshosts
   vars:
+    zonename: "myexample.com"
+
     dns:
-      ns1:
-        ip_address: 1.2.3.4
-      ns2:
-        ip_address: 2.3.4.5
+      clients:
+        - 10.0.0.0/8
+        - 192.168.0.0/16
+      nameservers:
+        ns1:
+          ip_address: 10.20.30.100
+      zones:
+        "myexample.com":
+          local: True
+
   roles:
     - role: loginpreferences
     - role: loginpreferences
@@ -16,4 +24,3 @@
     - role: aptup
     - role: bindapt
     - role: bindsetup
-

@@ -3,10 +3,13 @@
 // ansible playbook.
 //
 
-{%- if dns is defined -%}
+{% if dns is defined %}
 acl "trusted" {
-{% for nameserver, value in dns.iteritems() %}
+{% for nameserver, value in dns.nameservers.iteritems() %}
 	{{ value.ip_address }};
+{% endfor %}
+{% for trusted in dns.clients %}
+	{{ trusted }};
 {% endfor %}
 };
 {%- endif %}
@@ -16,7 +19,7 @@ options {
 
 	recursion yes;
 	allow-recursion { trusted; };
-	listen-on { {{ hostvars[inventory_hostname]['ansible_'+ dnslisten]['ipv4']['address'] }} };
+	listen-on { {{ hostvars[inventory_hostname]['ansible_'+ dnslisten]['ipv4']['address'] }}; };
 
 	forwarders {
 		4.2.2.2;

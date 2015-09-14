@@ -1,0 +1,20 @@
+//
+// Do any local configuration here
+//
+
+// Consider adding the 1918 zones here, if they are not used in your
+// organization
+//include "/etc/bind/zones.rfc1918";
+
+
+{% if dns is defined %}
+{% if dns.zones is defined %}
+{% for zonename, value in dns.zones.iteritems() %}
+zone "{{zonename}}" {
+	type master;
+	file "/etc/bind/zones/db.{{zonename}}";
+	allow-transfer { trusted; };
+};
+{% endfor %}
+{% endif %}
+{% endif %}

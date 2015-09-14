@@ -1,3 +1,20 @@
 - name: Update named.conf.options
   sudo: True
   template: src=named.conf.options.j2 dest=/etc/bind/named.conf.options
+
+- name: Create zone directory
+  sudo: True
+  file: path=/etc/bind/zones state=directory mode=0755
+
+- name: Update named.conf.local
+  sudo: True
+  template: src=named.conf.local.j2 dest=/etc/bind/named.conf.local
+
+- name: Create zones
+  sudo: True
+  template: src=zonefile.j2 dest=/etc/bind/zones/db.myexample.com
+
+- name: Restart bind9
+  service: name=bind9 state=restarted
+  sudo: True
+
