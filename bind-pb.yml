@@ -3,7 +3,11 @@
 - name: Configure Bind Server
   hosts: dnshosts
   vars:
-    dns_zone_info: test
+    dns:
+      ns1:
+        ip_address: 1.2.3.4
+      ns2:
+        ip_address: 2.3.4.5
   roles:
     - role: loginpreferences
     - role: loginpreferences
@@ -11,4 +15,5 @@
     - role: workdir
     - role: aptup
     - role: bindapt
+    - role: bindsetup
 
