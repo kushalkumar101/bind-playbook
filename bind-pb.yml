@@ -1,0 +1,14 @@
+#!/usr/bin/env ansible-playbook
+# vim:ft=ansible:
+- name: Configure Bind Server
+  hosts: dnshosts
+  vars:
+    dns_zone_info: test
+  roles:
+    - role: loginpreferences
+    - role: loginpreferences
+      sudo: True
+    - role: workdir
+    - role: aptup
+    - role: bindapt
+
