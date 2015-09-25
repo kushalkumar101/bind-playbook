@@ -1,0 +1,11 @@
+- name: Read zone data
+  include_vars: zones/{{zonename}} 
+
+- name: Create zone
+  sudo: True
+  template: src=zonefile.j2 dest="/etc/bind/zones/db.{{zonename}}"
+
+- name: Restart bind9
+  service: name=bind9 state=restarted
+  sudo: True
+

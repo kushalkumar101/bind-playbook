@@ -7,14 +7,12 @@
 //include "/etc/bind/zones.rfc1918";
 
 
-{% if dns is defined %}
-{% if dns.zones is defined %}
-{% for zonename, value in dns.zones.iteritems() %}
+{% if zones is defined %}
+{% for zonename, value in zones.iteritems() %}
 zone "{{zonename}}" {
 	type master;
 	file "/etc/bind/zones/db.{{zonename}}";
 	allow-transfer { trusted; };
 };
 {% endfor %}
-{% endif %}
 {% endif %}

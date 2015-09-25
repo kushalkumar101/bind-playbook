@@ -3,41 +3,35 @@
 // ansible playbook.
 //
 
-{% if dns is defined %}
 acl "trusted" {
-{% for nameserver, value in dns.nameservers.iteritems() %}
-	{{ value.ip_address }};
-{% endfor %}
-{% for trusted in dns.clients %}
+{% for trusted in clients %}
 	{{ trusted }};
 {% endfor %}
 };
-{%- endif %}
+
+acl "block" {
+{% for blocked in block %}
+        {{ blocked }};
+{% endfor %}
+};
 
 options {
+	version none;
+	listen-on { 127.0.0.1; {{ hostvars[inventory_hostname]['ansible_'+ dnslisten]['ipv4']['address'] }}; };
+	listen-on-v6 { any; };
 	directory "/var/cache/bind";
+	dump-file "/var/cache/bind/cache_dump.db";
+	statistics-file "/var/cache/bind/stats.txt";
+	memstatistics-file "/var/cache/bind/memstats.txt";
+{% if block is defined %}
+	blackhole { block; };
+{% endif %}
 
-	recursion yes;
+//	allow-query { trusted; };
+//	allow-query-cache { trusted; };
 	allow-recursion { trusted; };
-	listen-on { {{ hostvars[inventory_hostname]['ansible_'+ dnslisten]['ipv4']['address'] }}; };
-
-	forwarders {
-		4.2.2.2;
-		4.2.2.1;
-	};
-
-	// If there is a firewall between you and nameservers you want
-	// to talk to, you may need to fix the firewall to allow multiple
-	// ports to talk.  See http://www.kb.cert.org/vuls/id/800113
-
-	// If your ISP provided one or more IP addresses for stable 
-	// nameservers, you probably want to use them as forwarders.  
-	// Uncomment the following block, and insert the addresses replacing 
-	// the all-0's placeholder.
-
-	// forwarders {
-	// 	0.0.0.0;
-	// };
+	allow-transfer { trusted; };
+	recursion yes;
 
 	//========================================================================
 	// If BIND logs error messages about the root key being expired,
@@ -46,6 +40,5 @@ options {
 	dnssec-validation auto;
 
 	auth-nxdomain no;    # conform to RFC1035
-	listen-on-v6 { any; };
 };
 

@@ -1,0 +1,29 @@
+$TTL	{{ ttl }}
+{{zonename}}. IN SOA ns1.{{zonename}}. admin.{{zonename}}. (
+	{{ serial }}	; Serial
+	{{ refresh }}	; Refresh
+	{{ retry }}	; Retry
+	{{ expire }}	; Expire
+	{{ negativettl }}	; Negative Cache TTL
+)
+
+;
+; name servers - NS records
+;
+{% for nameserver, value in nameservers.iteritems() %}
+{{zonename}}.	IN	NS	{{nameserver}}.
+{% endfor %}
+
+; A records
+{% for ar in arec %}
+{% if ar.ipv4 is defined %}
+{{ar.name}}	IN	A	{{ar.ipv4}}{% if ar.description is defined %}  ; {{ ar.description }}{% endif %}
+
+{% endif %}
+{% endfor %}
+
+; CNAME records
+{% for cn in cname %}
+{{cn.name}}	IN	CNAME	{{cn.alias}}{% if cn.description is defined %} ; {{ cn.description }}{% endif %}
+
+{% endfor %}

@@ -3,18 +3,33 @@
 - name: Configure Bind Server
   hosts: dnshosts
   vars:
-    zonename: "myexample.com"
+    zonename: "vzwops.com"
 
-    dns:
-      clients:
-        - 10.0.0.0/8
-        - 192.168.0.0/16
-      nameservers:
-        ns1:
-          ip_address: 10.20.30.100
-      zones:
-        "myexample.com":
-          local: True
+    ttl: 300
+    negativettl: 300
+    refresh: 604800
+    retry: 86400
+    expire: 2419200
+    serial: 20150925
+
+    # ip addresses and cidr networks in block are blackholed
+    block:
+      - 91.205.43.25 #  British Virgin Islands site getting DNS root lookup magnification attack 2010-07-11
+    # these are clients that are allowed to do dns queries
+    clients:
+      - 10.0.0.0/8
+      - 172.0.0.0/8
+      - 192.168.0.0/16
+    # these are trusted nameservers (allowed zonetransfers)
+    nameservers:
+      ns1.vzwops.com:
+        ipv4: 159.203.89.111
+    # this is the list of zones we do dns for
+    zones:
+      "vzwops.com":
+        local: True
+      "vzw-op.com":
+        local: True
 
   roles:
     - role: loginpreferences
@@ -24,3 +39,5 @@
     - role: aptup
     - role: bindapt
     - role: bindsetup
+    - { role: zonesetup, zonename: "vzwops.com" }
+    - { role: zonesetup, zonename: "vzw-op.com" }

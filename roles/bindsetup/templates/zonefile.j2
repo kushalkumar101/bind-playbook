@@ -1,16 +1,20 @@
-$TTL    604800
-@       IN      SOA     ns1.{{zonename}}. admin.{{zonename}}. (
-                  3       ; Serial
-             604800     ; Refresh
-              86400     ; Retry
-            2419200     ; Expire
-             604800 )   ; Negative Cache TTL
+$TTL    {{ ttl }}
+{{zonename}}. IN SOA ns1.{{zonename}}. admin.{{zonename}}. (
+  {{ serial }}      ; Serial
+  {{ refresh }}     ; Refresh
+  {{ retry }}       ; Retry
+  {{ expire }}      ; Expire
+  {{ negativettl }} ; Negative Cache TTL
+)
+
 ;
 ; name servers - NS records
-     IN      NS      ns1.{{zonename}}.
+;
+{% for nameserver, value in nameservers.iteritems() %}
+{{zonename}}     IN      NS      {{nameserver}}.
+{% endfor %}
 
 ; name servers - A records
-ns1.{{zonename}}.              IN      A       {{ dns.nameservers.ns1.ip_address }}
 
 ; for example...
 www.{{zonename}}.	       IN      A      10.20.30.240
