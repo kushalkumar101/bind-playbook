@@ -1,0 +1,15 @@
+{
+  "name": "bind-playbook",
+  "scripts": {
+  },
+  "env": {
+  },
+  "formation": {
+  },
+  "addons": [
+
+  ],
+  "buildpacks": [
+
+  ]
+}
